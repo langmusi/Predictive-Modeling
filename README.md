@@ -31,7 +31,9 @@ Our precition on failture (our interested event) can be done within a period of 
 ## Examples from Others
 
 1. From github: there are many useful learning sources
-2. From github: Unikie/predictive-maintenance-tutorial   https://github.com/Unikie/predictive-maintenance-tutorial
-3. From Azure: Solution-mallar för förutsägande underhåll  
+2. From Azure AI Gallery: Some examples are in Machine Learning Studio (difficult for me to follow without seeing the codes).
+https://gallery.azure.ai/Experiment/Predictive-Maintenance-Step-1-of-3-data-preparation-and-feature-engineering-2
+3. From github: Unikie/predictive-maintenance-tutorial   https://github.com/Unikie/predictive-maintenance-tutorial
+4. From Azure: Solution-mallar för förutsägande underhåll  
 https://docs.microsoft.com/sv-se/azure/machine-learning/team-data-science-process/predictive-maintenance-playbook#solution-templates-for-predictive-maintenance
 
