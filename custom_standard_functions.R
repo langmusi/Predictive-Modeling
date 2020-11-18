@@ -22,6 +22,17 @@ basic_eda <- function(data){
 
 basic_eda_r <- function(data){
         print(head(data))
+        print(str(data))
         print(status(data))
         plot_num(data)
+        
+        temp <- status(data)$unique
+       
 }
+
+basic_eda_r(df_1)
+
+temp <- status(df_1)$unique
+ifelse (temp < 10, lapply(df_1, function(x) unique(x)), NA)
+
+freq(df_1)
