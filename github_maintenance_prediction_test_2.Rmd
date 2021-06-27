@@ -1,0 +1,131 @@
+---
+title: "github_maintenance_prediction_test_2"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+## Scope of the Project
+
+*Questions to answer*:
+
+1. To predict the next maintenance time for a component.
+
+The prediction we have now is based on the maintenance planing system. For example, a component is needed to be maintained in 3 months because it is stated in the maintenance plan. The methods work with optimatization algorithms in order to make the predictions more workable. This method therefore is not a data-driven analysis and modelling. It is based on expertises and experiences. 
+
+This test on the other hand puts the focus on the historical data. Let the data model/predict the next time maintenance. 
+
+1.1 Do we have a dataset that can deliver such information to do predictions?
+
+1.2 What are the important variables for prediciton?
+
+Y = date 
+
+$X_1$ = Performance Days. This is computed by PerformanceKm/kmPerDay, PerformanceDay = computation of today's data and ActionDate, PerformanceMeter/timePerDay
+
+2. Is the prediction closer to the reality if we have a data-driven prediction than the prediction output from a fixed and predetermined manually-writen plan?
+
+
+*Expected outcome*:
+
+1. The data-driven method is better  --> Because of lacking of data, the same compnent unique ID can have different maintenance actions after the same performance kilometers and the same performance hours, it is difficult for a ML-model to predict which maintenance actions may happen since the x-values are the same.
+
+
+*What we have now*:
+
+1. Data: a customer's data
+
+```{r, echo=FALSE, include=FALSE}
+list.of.packages <- c("dplyr", "tidyr", "RODBC", "lubridate", "gtools", "stringr", "data.table", "openxlsx", "odbc", "readr", "ggplot2")
+new.packages <- list.of.packages[ !(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+lapply(list.of.packages, library, character.only = TRUE)
+```
+
+
+## Reading the Data
+
+```{r connection to data, echo=FALSE}
+# establishing connection
+con <- dbConnect(odbc::odbc(), dsn = 'analyticsDB', UID = 'AnalyticsDBAdmin', PWD = 'Snu$kBurk3n!', encoding = 'Windows-1252')
+
+query <- read_file("C:/Users/LIUM3478/Bitbucket/backend/projects/GC/UP/Data.sql")
+raw_data <- dbGetQuery(con, query)
+```
+
+```{r, eval = FALSE, echo=FALSE}
+# saving the dataset
+write.csv2(raw_data, 
+           file = "C:/Users/LIUM3478/OneDrive Corp/OneDrive - Atkins Ltd/Work_Atkins/UP/self_work_test/maintenance_prediction_test_2.csv", 
+           fileEncoding = "Windows-1252",
+           row.names = FALSE)
+
+df <- raw_data
+```
+
+```{r, echo=FALSE}
+# reading in the data
+df <- read.csv2(file = "C:/Users/LIUM3478/OneDrive Corp/OneDrive - Atkins Ltd/Work_Atkins/UP/self_work_test/maintenance_prediction_test_2.csv",
+                sep = ";",
+                encoding = "utf-8")
+df
+```
+
+
+```{r}
+# creating new variables for the later creation of the new variables
+df$KmPerDay <- 1000
+df$TimePerDay <- 10
+
+# createing PerformanceDays, how many days sin ActionDate
+df$PerformanceDays <- as.numeric(today() - as.Date.factor(df$ActionDate))
+
+# our Y
+df$splitcode <- as.factor(df$splitcode)
+```
+
+Checking the dataset time range
+
+```{r, collapse=TRUE}
+# ActionDate
+sum(is.na(df$ActionDate))
+data.frame(max_actiondate = max(df$ActionDate), min_actiondate = min(df$ActionDate))
+df %>% group_by(ComponentUniqueID) %>% summarise(max_actiondate = max(ActionDate), min_actiondate = min(ActionDate))
+```
+
+
+*Is there possibility that SplitCode can be regroupped? It seems that Ö1, Ö2, Ö3, Ö4 can be regoupped to a group, then we reduce number of lables for Y to predict.*
+
+```{r}
+# How many unique splitcode do we have in the dataset?
+# n_distinct(df$splitcode)
+# df[, c(26, 27, 28)]
+sum(is.na(df$SplitCodeName))
+
+# unique split code
+length(df$splitcode)
+```
+
+*How many unique component ID in the dataset?*
+
+```{r}
+if (length(unique(df$ComponentUniqueID)) == nrow(df)) 
+{print("Yes")} else print(length(unique(df$ComponentUniqueID)))
+```
+
+
+```{r}
+#class(df$ComponentUniqueID)
+df %>% 
+        select(splitcode, ComponentUniqueID, PerformanceKm, PerformanceDays, PerformanceMeter) %>% 
+        filter(ComponentUniqueID == 183765)
+```
+
+```{r}
+df %>% filter(ComponentUniqueID == 183765)
+```
+
