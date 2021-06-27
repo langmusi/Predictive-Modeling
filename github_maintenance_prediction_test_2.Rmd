@@ -49,27 +49,10 @@ lapply(list.of.packages, library, character.only = TRUE)
 
 ## Reading the Data
 
-```{r connection to data, echo=FALSE}
-# establishing connection
-con <- dbConnect(odbc::odbc(), dsn = 'analyticsDB', UID = 'AnalyticsDBAdmin', PWD = 'Snu$kBurk3n!', encoding = 'Windows-1252')
-
-query <- read_file("C:/Users/LIUM3478/Bitbucket/backend/projects/GC/UP/Data.sql")
-raw_data <- dbGetQuery(con, query)
-```
-
-```{r, eval = FALSE, echo=FALSE}
-# saving the dataset
-write.csv2(raw_data, 
-           file = "C:/Users/LIUM3478/OneDrive Corp/OneDrive - Atkins Ltd/Work_Atkins/UP/self_work_test/maintenance_prediction_test_2.csv", 
-           fileEncoding = "Windows-1252",
-           row.names = FALSE)
-
-df <- raw_data
-```
 
 ```{r, echo=FALSE}
 # reading in the data
-df <- read.csv2(file = "C:/Users/LIUM3478/OneDrive Corp/OneDrive - Atkins Ltd/Work_Atkins/UP/self_work_test/maintenance_prediction_test_2.csv",
+df <- read.csv2(file = "maintenance_prediction_test_2.csv",
                 sep = ";",
                 encoding = "utf-8")
 df
