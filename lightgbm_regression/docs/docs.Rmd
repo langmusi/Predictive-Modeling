@@ -220,4 +220,5 @@ if __name__ == '__main__':
 # This file is empty.
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+3 Techniques to Effortlessly Import and Execute Python Modules:  
+https://towardsdatascience.com/3-advance-techniques-to-effortlessly-import-and-execute-your-python-modules-ccdcba017b0c
