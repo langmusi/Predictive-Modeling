@@ -212,12 +212,12 @@ if __name__ == '__main__':
     print('Fake data after processing is \n', s.clean_data)
 ```
 
-## Including Plots
+## import packages from utils
 
-You can also embed plots, for example:
+ Python recognizes a directory as a package when it has a file named __init__.py in it. 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+# This file is empty.
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
