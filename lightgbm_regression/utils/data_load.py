@@ -1,23 +1,27 @@
 import pandas as pd
 import numpy as np
 
+
 class DataLoader:
 
-    def __init__(self, data_dir: str):
+    def __init__(self, data_dir):
         self.data_dir = data_dir
+        
 
 
     def load_data(self):
-        df = pd.read_csv(self, encoding = 'ISO 8859-1', sep = ";", decimal=",")
+        print(self.data_dir)
+        df = pd.read_csv(self.data_dir, encoding = 'ISO 8859-1', sep = ";", decimal=",")
 
         return df
 
+    # # converting object type to category for gradient boosting algorithms
+    # def obj_to_cat(self):
+    #     obj_feat = list(self.df.loc[:, self.df.dtypes == 'object'].columns.values)
 
-    # converting object type to category for gradient boosting algorithms
-    def obj_to_cat(data):
-        obj_feat = list(data.loc[:, data.dtypes == 'object'].columns.values)
+    #     for feature in obj_feat:
+    #         self.df[feature] = pd.Series(self.df[feature], dtype="category")
 
-        for feature in obj_feat:
-            data[feature] = pd.Series(data[feature], dtype="category")
+    #     return self.df
 
-        return data
+    
