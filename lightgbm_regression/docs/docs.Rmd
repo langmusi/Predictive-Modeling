@@ -222,3 +222,23 @@ if __name__ == '__main__':
 
 3 Techniques to Effortlessly Import and Execute Python Modules:  
 https://towardsdatascience.com/3-advance-techniques-to-effortlessly-import-and-execute-your-python-modules-ccdcba017b0c
+
+## feature selection
+
+The question from kaggle:  
+If i have a dataset with 50 Categorical and 50 numerical variables then how can i perform Feature selection for my Categorical variables. I believe that we can convert those 50 Categorical variables into continuous using One Hot Encoding or Feature Hashing and apply SelectKBest or RFECV or PCA..
+
+Is there any other technique that we can use for feature selection for categorical variables. ?
+
+The concern is some of my categorical variables have more than 10000 distinct values and if i perform One Hot encoding , Im afraid that it will increase my Total dimensions and have an impact on model performance.
+
+The answers:  
+1. Chi2 can be used to select categorical features but for a classification problem not a regression problem. ANOVA can be used for categorical feature selection for regression problems.  
+2. HeatMap: using one-hot encoding when plotting  
+3. One good starting point (because it's simple and easy to check expectations) is to look at the feature importance after fitting a preliminary model. With one hot encoded variables you'l be able to see which levels are important as well as features. Trees are good for this, but be aware that feature importance is affected by correlations in the predictors and won't clearly show interactions.  
+
+If you're worried about the carnality of the features, you could try binning before one hot encoding and/or reducing the poorly represented levels into one "other" category.
+
+
+The article contains which methods to use for different combinations of input data types and output data types:  
+https://www.simplilearn.com/tutorials/machine-learning-tutorial/feature-selection-in-machine-learning

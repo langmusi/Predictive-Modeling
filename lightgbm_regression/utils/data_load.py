@@ -3,17 +3,26 @@ import numpy as np
 
 
 class DataLoader:
+    """ not using __init__() here because I use the ouput form one method
+    as input to another method
+    """
 
-    def __init__(self, data_dir):
-        self.data_dir = data_dir
-        
+    def read_data(self, data_dir):
+       df = pd.read_csv(data_dir, encoding = 'ISO 8859-1', sep = ";", decimal=",")
+       print('Data shape:', str(df.shape) + '\n')
+       print('Data columns:', str(df.columns))
+       
+       return df
 
 
-    def load_data(self):
-        print(self.data_dir)
-        df = pd.read_csv(self.data_dir, encoding = 'ISO 8859-1', sep = ";", decimal=",")
+    
+    def remove_col(self, df, column_name_list):
+        res = df.drop(column_name_list, axis=1)
+        print('Data shape before dropping columns:', str(df.shape) + '\n')
+        print('Data shape after dropping columns:', str(res.shape))
 
-        return df
+        return res
+
 
     # # converting object type to category for gradient boosting algorithms
     # def obj_to_cat(self):
