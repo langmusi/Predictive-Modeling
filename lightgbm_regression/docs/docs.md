@@ -15,7 +15,7 @@ https://glassboxmedicine.com/2019/06/01/everything-you-need-to-know-about-prepar
 
 To understand: how to work with class and def
 
-```{r}
+
 import numpy as np
 import pandas as pd
 import sklearn.preprocessing
@@ -210,15 +210,13 @@ if __name__ == '__main__':
                normalize_these_continuous = ['weight','height'],
                seed = 12345)
     print('Fake data after processing is \n', s.clean_data)
-```
+
 
 ## import packages from utils
 
- Python recognizes a directory as a package when it has a file named __init__.py in it. 
+Python recognizes a directory as a package when it has a file named __init__.py in it. 
 
-```{r}
-# This file is empty.
-```
+This file is empty.
 
 3 Techniques to Effortlessly Import and Execute Python Modules:  
 https://towardsdatascience.com/3-advance-techniques-to-effortlessly-import-and-execute-your-python-modules-ccdcba017b0c
