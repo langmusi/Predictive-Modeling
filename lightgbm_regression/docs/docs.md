@@ -15,10 +15,12 @@ https://glassboxmedicine.com/2019/06/01/everything-you-need-to-know-about-prepar
 
 To understand: how to work with class and def
 
+```Python  
+   import numpy as np  
+   import pandas as pd  
+   import sklearn.preprocessing  
 
-import numpy as np
-import pandas as pd
-import sklearn.preprocessing
+
 
 class Splits(object):
     """Split data and labels into train, validation, and test sets.
@@ -210,7 +212,7 @@ if __name__ == '__main__':
                normalize_these_continuous = ['weight','height'],
                seed = 12345)
     print('Fake data after processing is \n', s.clean_data)
-
+```
 
 ## import packages from utils
 
