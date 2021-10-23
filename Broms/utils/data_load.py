@@ -8,7 +8,7 @@ class DataLoader:
     """
 
     def read_data(self, data_dir):
-       df = pd.read_csv(data_dir, encoding = 'ISO 8859-1', sep = ";", decimal=",")
+       df = pd.read_csv(data_dir, encoding = 'ISO 8859-1', sep = ",", decimal=",")
        print('Data shape:', str(df.shape) + '\n')
        print('Data columns:', str(df.columns))
        
