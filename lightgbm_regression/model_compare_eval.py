@@ -86,6 +86,15 @@ def GroupRegress(data, yvar, xvars):
     result = sm.OLS(Y, X, missing='drop').fit()
     return result.params
 
+def GroupRegress(data, yvar, xvars):
+    regr = linear_model.LinearRegression()
+    Y = data[yvar]
+    X = data[xvars]
+    regr.fit(X, Y)
+    y_pred = regr.predict(test_df['LeftWheelDiameter'])
+    y_pred = pd.DataFrame(y_pred)
+    return y_pred
+
 
 df_notnull_reg = df_notnull[["LeftWheelDiameter", "Littera", "VehicleOperatorName",
                         "TotalPerformanceSnapshot", "km_till_OMS"]]
@@ -99,49 +108,11 @@ train_df.groupby(['Littera',
                                               xvars=['LeftWheelDiameter'])
     
 
+from sklearn import linear_model
+regr = linear_model.LinearRegression()
+regr.fit(X_train, y_train)
 
 ################################################################################
-def lightgbm_func(data, cat_convert=False):
-
-    if cat_convert==True:
-        # object is converted to category
-        obj_feat = list(X.loc[:, X.dtypes == 'object'].columns.values)
-        for feature in obj_feat:
-            X[feature] = pd.Series(X[feature], dtype="category")
-
-    
-    # Training and Testing Sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 1234)
-
-    # calling lightgbm method directly
-    # converting the specific Dataset data format
-    lgb_train = lgb.Dataset(X_train, y_train)
-    lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
-
-    hyper_params = {
-        'task': 'train',
-        'boosting_type': 'gbdt',   # set promotion type
-        'objective': 'regression',
-        'metric': 'rmse',  # evaluation function: rmse, l2 loss function, {'l2', 'auc'}
-        'learning_rate': 0.3,
-        'feature_fraction': 1, # The proportion of feature selection for tree building 
-        "num_leaves": 31,  # number of leaf nodes
-    }
-
-
-    gbm = lgb.train(params=hyper_params, 
-                    train_set=lgb_train, valid_sets=lgb_eval, 
-                    num_boost_round=20, verbose_eval=False, early_stopping_rounds=5)
-
-    y_pred = gbm.predict(X_test)
-    y_pred = pd.DataFrame(y_pred)
-
-    # eval
-    return (np.nanmean((y_pred - y_test) ** 2))**0.5
-
-   
-
-## 
 df.groupby(["Littera", "VehicleOperatorName"]).nunique()
 df_small = df.loc[(df["Littera"] == "REGINA") & (df["VehicleOperatorName"] == "SJAB TÅG I BERGSLAGEN")]
 df_small = df.loc[(df["Littera"] == "REGINA") & (df["VehicleOperatorName"] == "SJAB VÄNERTÅG")]
