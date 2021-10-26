@@ -24,3 +24,24 @@ class DataProcessor:
         print('\tData shape after one-hot-encoding:',str(res.shape))
        
         return res
+
+
+    def dummy_generator (self, cat_convert = True):
+    
+        features_data = self.data
+        
+        # Create dummy variables with prefix 'Littera'
+        features_data = pd.concat([features_data,
+                                pd.get_dummies(features_data['Littera'], prefix = 'L')], 
+                                axis=1)
+        # VehicleOperatorName dummy
+        features_data = pd.concat([features_data, 
+                                pd.get_dummies(features_data['VehicleOperatorName'],
+                                                prefix = 'V')], axis=1)
+
+        if cat_convert == True:    
+            # delete variables we are not going to use anymore
+            del features_data['VehicleOperatorName']
+            del features_data['Littera']
+            
+        return features_data    

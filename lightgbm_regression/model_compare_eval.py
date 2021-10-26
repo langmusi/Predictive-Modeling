@@ -1,9 +1,7 @@
-import pandas as pd
 
+import pandas as pd
 import numpy as np
-from numpy import mean
-from numpy import std
-from numpy import NaN
+
 
 from sklearn.datasets import make_regression
 from sklearn.model_selection import cross_val_score
@@ -25,12 +23,22 @@ df.groupby(['Littera','VehicleOperatorName']).size().reset_index().rename(column
 
 df[(df['km_till_OMS'].isnull()) & (df['counter'] ==1) & (df['ActionCode'] == 'OMS')]
 
-y = df[['km_till_OMS']].values
-X = df[["LeftWheelDiameter", "Littera", "VehicleOperatorName",
-        "TotalPerformanceSnapshot", "maxTotalPerformanceSnapshot"]]
+# sorting df by ComponentUniqueID and ActionDate, then choosing km_till_oms that is nan
+df.sort_values(['ComponentUniqueID', 'ActionDate'], ascending=[True, True], inplace=True)
+df.shape
+df_notnull = df[df['km_till_OMS'].notnull()]
+df_notnull.shape
+df_notnull = df_notnull.dropna(subset=['km_till_OMS'])
+df_notnull.plot.scatter(x = 'ActionDate', y = 'km_till_OMS', s = 100);
+###### 
+y = df_notnull[['km_till_OMS']].values
+X = df_notnull[["LeftWheelDiameter", "Littera", "VehicleOperatorName",
+        "TotalPerformanceSnapshot"]]
 # X["Littera_Operator"] = X.Littera + " " + X.VehicleOperatorName
 # X.drop(["Littera", "VehicleOperatorName"], axis = 1, inplace=True)
 
+
+############################### Light Gradient Boosting Decision Tree #####################
 # converting object type to category for gradient boosting algorithms
 def obj_to_cat(data):
     obj_feat = list(data.loc[:, data.dtypes == 'object'].columns.values)
@@ -46,32 +54,7 @@ X = obj_to_cat(X)
 
 # Training and Testing Sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 1234)
-
-# calling lightgbm method directly
-# converting the specific Dataset data format
-lgb_train = lgb.Dataset(X_train, y_train)
-lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
-
-hyper_params = {
-    'task': 'train',
-    'boosting_type': 'gbdt',   # set promotion type
-    'objective': 'regression',
-    'metric': {'l2', 'auc'},  # evaluation function: rmse, l2 loss function
-    'learning_rate': 0.5,
-    'feature_fraction': 1, # The proportion of feature selection for tree building 
-    "num_leaves": 20,  # number of leaf nodes
-}
-
-
-gbm = lgb.train(params=hyper_params, 
-                train_set=lgb_train, valid_sets=lgb_eval, 
-                num_boost_round=20, verbose_eval=False, early_stopping_rounds=5)
-
-y_pred = gbm.predict(X_test)
-y_pred = pd.DataFrame(y_pred)
-
-# eval
-(np.nanmean((y_pred - y_test) ** 2))**0.5
+df_notnull.groupby(['Littera','VehicleOperatorName']).size().reset_index().rename(columns={0:'count'})
 
 
 ## sklearn
@@ -92,35 +75,32 @@ y_pred = pd.DataFrame(y_pred)
 (np.nanmean((y_pred - y_test) ** 2))**0.5
 
 
-##############
-y = df[['km_till_OMS']].values
-X = df[["LeftWheelDiameter", "TotalPerformanceSnapshot", "maxTotalPerformanceSnapshot",
-        "Littera", "VehicleOperatorName"]] 
+############################ Linear Regression for groupped data ####################
+### difficult to implement it here, easier in R
+import statsmodels.api as sm 
 
-## creating a function for modeling
-def feature_generator (data, cat_convert = False):
-    
-    features_data = data
-    
-    # Create dummy variables with prefix 'Littera'
-    features_data = pd.concat([features_data,
-                               pd.get_dummies(features_data['Littera'], prefix = 'L')], 
-                               axis=1)
-    # VehicleOperatorName dummy
-    features_data = pd.concat([features_data, 
-                               pd.get_dummies(features_data['VehicleOperatorName'],
-                                              prefix = 'V')], axis=1)
+def GroupRegress(data, yvar, xvars):
+    Y = data[yvar]
+    X = data[xvars]
+    X['intercept'] = 1.
+    result = sm.OLS(Y, X, missing='drop').fit()
+    return result.params
 
-    if cat_convert == False:    
-        # delete variables we are not going to use anymore
-        del features_data['VehicleOperatorName']
-        del features_data['Littera']
-        
-    return features_data     
-    
-# Generate features from training dataset
-X = feature_generator(X)
 
+df_notnull_reg = df_notnull[["LeftWheelDiameter", "Littera", "VehicleOperatorName",
+                        "TotalPerformanceSnapshot", "km_till_OMS"]]
+train_df, test_df = train_test_split(df_notnull_reg, test_size = 0.2, random_state = 1234)
+np.any(np.isfinite(train_df['km_till_OMS']),axis=0)
+np.any(np.isnan(train_df['km_till_OMS']),axis=0)
+np.where(np.isfinite(train_df['km_till_OMS']))
+train_df.groupby(['Littera', 
+                 'VehicleOperatorName']).apply(GroupRegress, 
+                                              yvar='km_till_OMS', 
+                                              xvars=['LeftWheelDiameter'])
+    
+
+
+################################################################################
 def lightgbm_func(data, cat_convert=False):
 
     if cat_convert==True:
