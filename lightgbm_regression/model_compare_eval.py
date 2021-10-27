@@ -95,6 +95,24 @@ def GroupRegress(data, yvar, xvars):
     y_pred = pd.DataFrame(y_pred)
     return y_pred
 
+# def model(df):
+#    
+#     # With Statsmodels, we need to add our intercept term, B0, manually
+#     X = sm.add_constant(X)
+#     model = sm.OLS(y, X, missing='drop')
+        
+#     return np.squeeze(model.fit().predict(X))
+
+# def group_predictions(df):
+#     predict_df = pd.DataFrame()
+#     predict_df = df.groupby(["Littera", "VehicleOperatorName"]).apply(model)
+#     return predict_df
+
+# model(df)
+# pred = group_predictions(df)
+# pred = pred.to_frame()
+# pred.to_csv("./output/pred_output.csv")
+# print(pred.head())
 
 df_notnull_reg = df_notnull[["LeftWheelDiameter", "Littera", "VehicleOperatorName",
                         "TotalPerformanceSnapshot", "km_till_OMS"]]
