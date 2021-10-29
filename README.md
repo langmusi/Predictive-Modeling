@@ -37,3 +37,5 @@ https://gallery.azure.ai/Experiment/Predictive-Maintenance-Step-1-of-3-data-prep
 4. From Azure: Solution-mallar för förutsägande underhåll  
 https://docs.microsoft.com/sv-se/azure/machine-learning/team-data-science-process/predictive-maintenance-playbook#solution-templates-for-predictive-maintenance
 
+## Learning Curve for Model Performance 
+1. the link to https://towardsdatascience.com/why-you-should-be-plotting-learning-curves-in-your-next-machine-learning-project-221bae60c53
